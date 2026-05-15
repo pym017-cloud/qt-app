@@ -607,13 +607,167 @@ function ShareScreen({uid}){
   </>);
 }
 
+// ── 내 묵상 노트 화면 ──
+function MyNotesScreen({onClose}){
+  const me = window._me;
+  const[notes,setNotes]=useState([]);
+  const[loading,setLoading]=useState(true);
+  const[editing,setEditing]=useState(null);
+  const[editVerse,setEditVerse]=useState('');
+  const[editVerseRef,setEditVerseRef]=useState('');
+  const[editText,setEditText]=useState('');
+  const[editApply,setEditApply]=useState('');
+  const[saving,setSaving]=useState(false);
+
+  useEffect(()=>{
+    const{db,collection,query,where,onSnapshot}=window._fb;
+    const q=query(collection(db,'shares'),where('uid','==',me.uid));
+    return onSnapshot(q,snap=>{
+      let docs=snap.docs.map(d=>({id:d.id,...d.data()}));
+      docs.sort((a,b)=>{
+        const ta=a.createdAt?.toDate?.()||new Date(0);
+        const tb=b.createdAt?.toDate?.()||new Date(0);
+        return tb-ta;
+      });
+      setNotes(docs);
+      setLoading(false);
+    });
+  },[me.uid]);
+
+  const startEdit=n=>{
+    setEditing(n.id);
+    setEditVerseRef(n.verseRef||'');
+    setEditVerse(n.verse||'');
+    setEditText(n.text||'');
+    setEditApply(n.apply||'');
+  };
+
+  const saveEdit=async(n)=>{
+    setSaving(true);
+    try{
+      const{db,doc,updateDoc}=window._fb;
+      await updateDoc(doc(db,'shares',n.id),{verseRef:editVerseRef,verse:editVerse,text:editText,apply:editApply});
+      setEditing(null);
+    }catch(e){alert('저장 실패.');}
+    finally{setSaving(false);}
+  };
+
+  const deleteNote=async(n)=>{
+    if(!confirm('이 묵상 노트를 삭제할까요?'))return;
+    const{db,doc,deleteDoc}=window._fb;
+    try{await deleteDoc(doc(db,'shares',n.id));}
+    catch(e){alert('삭제 실패.');}
+  };
+
+  const fmtDate=ts=>{
+    if(!ts)return'';
+    const d=ts.toDate?ts.toDate():new Date(ts);
+    return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+  };
+
+  return(
+    <div className="qt-app" style={{position:'fixed',inset:0,zIndex:50,background:'var(--bg)',overflowY:'auto'}}>
+      <div className="qt-write-head">
+        <button className="qt-write-cancel" onClick={onClose}>← 닫기</button>
+        <div style={{fontSize:17,fontWeight:700}}>내 묵상 노트</div>
+        <div style={{width:60}}/>
+      </div>
+
+      <div style={{padding:'8px 16px 0',color:'var(--text-3)',fontSize:13}}>
+        총 {notes.length}편의 묵상 노트
+      </div>
+
+      {loading?(
+        <div className="qt-empty"><div className="spinner" style={{margin:'0 auto'}}/></div>
+      ):notes.length===0?(
+        <div className="qt-empty">
+          <div className="qt-empty-icon">📖</div>
+          <div className="qt-empty-msg">아직 묵상 노트가 없어요.<br/>오늘 묵상을 시작해보세요!</div>
+        </div>
+      ):notes.map(n=>(
+        <div key={n.id} style={{background:'var(--surface)',borderRadius:20,padding:'20px 20px 16px',margin:'12px 16px 0'}}>
+          {/* 헤더 */}
+          <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between',marginBottom:12}}>
+            <div>
+              <div style={{fontSize:13,color:'var(--gold)',fontWeight:700,letterSpacing:'.06em'}}>{fmtDate(n.createdAt)}</div>
+              <div style={{fontSize:16,fontWeight:700,marginTop:3}}>{n.book} {n.range}</div>
+            </div>
+            {editing!==n.id&&(
+              <div style={{display:'flex',gap:6,flexShrink:0,marginLeft:8}}>
+                <button onClick={()=>startEdit(n)} style={{padding:'7px 13px',borderRadius:9,background:'var(--gold-soft)',color:'var(--gold)',fontSize:13,fontWeight:700,border:0,cursor:'pointer'}}>수정</button>
+                <button onClick={()=>deleteNote(n)} style={{padding:'7px 13px',borderRadius:9,background:'rgba(213,90,73,0.15)',color:'var(--danger)',fontSize:13,fontWeight:600,border:0,cursor:'pointer'}}>삭제</button>
+              </div>
+            )}
+          </div>
+
+          {/* 수정 모드 */}
+          {editing===n.id?(
+            <div>
+              <div style={{fontSize:12,color:'var(--gold)',fontWeight:700,letterSpacing:'.08em',marginBottom:6}}>은혜 받은 구절</div>
+              <input
+                style={{width:'100%',background:'transparent',border:0,borderBottom:'1px solid var(--divider)',padding:'6px 0',color:'var(--gold)',fontWeight:700,fontSize:13,fontFamily:'inherit',outline:'none',marginBottom:8,letterSpacing:'.06em'}}
+                value={editVerseRef} onChange={e=>setEditVerseRef(e.target.value)} placeholder="예: 눅 24:15"
+              />
+              <textarea
+                style={{width:'100%',background:'rgba(212,165,116,0.08)',borderLeft:'3px solid var(--gold)',borderRadius:'4px 14px 14px 4px',padding:'12px 14px',color:'var(--text)',fontFamily:'Noto Serif KR,serif',fontSize:16,lineHeight:1.65,resize:'none',outline:'none',border:'none',borderLeft:'3px solid var(--gold)',marginBottom:12}}
+                rows={3} value={editVerse} onChange={e=>setEditVerse(e.target.value)} placeholder="마음에 와닿은 구절"
+              />
+              <div style={{fontSize:12,color:'var(--gold)',fontWeight:700,letterSpacing:'.08em',marginBottom:6}}>받은 은혜 · 깨달음</div>
+              <textarea
+                style={{width:'100%',background:'var(--surface-2)',border:'1px solid var(--gold)',borderRadius:14,padding:'14px 16px',color:'var(--text)',fontSize:16,lineHeight:1.65,fontFamily:'inherit',resize:'none',outline:'none',marginBottom:10}}
+                rows={5} value={editText} onChange={e=>setEditText(e.target.value)}
+              />
+              <div style={{fontSize:12,color:'var(--gold)',fontWeight:700,letterSpacing:'.08em',marginBottom:6}}>결단 · 적용</div>
+              <textarea
+                style={{width:'100%',background:'var(--surface-2)',border:'1px solid var(--divider)',borderRadius:14,padding:'12px 16px',color:'var(--text)',fontSize:15,lineHeight:1.65,fontFamily:'inherit',resize:'none',outline:'none',marginBottom:12}}
+                rows={2} value={editApply} onChange={e=>setEditApply(e.target.value)} placeholder="오늘 실천할 한 가지"
+              />
+              <div style={{display:'flex',gap:8}}>
+                <button onClick={()=>saveEdit(n)} disabled={saving} style={{flex:1,height:46,borderRadius:12,background:'var(--gold)',color:'#1a1410',fontSize:16,fontWeight:700,border:0,cursor:'pointer',fontFamily:'inherit'}}>
+                  {saving?'저장 중…':'저장'}
+                </button>
+                <button onClick={()=>setEditing(null)} style={{flex:1,height:46,borderRadius:12,background:'var(--surface-2)',color:'var(--text-2)',fontSize:16,fontWeight:600,border:0,cursor:'pointer',fontFamily:'inherit'}}>
+                  취소
+                </button>
+              </div>
+            </div>
+          ):(
+            /* 보기 모드 */
+            <>
+              {n.verseRef&&(
+                <div style={{marginBottom:12,padding:'12px 14px 12px 16px',background:'rgba(212,165,116,0.08)',borderLeft:'3px solid var(--gold)',borderRadius:'4px 12px 12px 4px'}}>
+                  <div style={{fontSize:12,color:'var(--gold)',fontWeight:700,letterSpacing:'.06em'}}>{n.verseRef}</div>
+                  {n.verse&&<div style={{fontFamily:'Noto Serif KR,serif',fontSize:16,lineHeight:1.65,color:'var(--text)',marginTop:5}}>"{n.verse}"</div>}
+                </div>
+              )}
+              {n.text&&<div style={{fontSize:16,lineHeight:1.7,color:'var(--text)',marginBottom:n.apply?10:0}}>{n.text}</div>}
+              {n.apply&&(
+                <div style={{fontSize:14,color:'var(--text-2)',paddingTop:10,borderTop:'1px solid var(--divider)'}}>✏️ {n.apply}</div>
+              )}
+            </>
+          )}
+        </div>
+      ))}
+      <div style={{height:40}}/>
+    </div>
+  );
+}
+
 function MoreScreen({streak,onLogout,onDash}){
   const me=window._me;
+  const[showNotes,setShowNotes]=useState(false);
   return(<>
+    {showNotes&&<MyNotesScreen onClose={()=>setShowNotes(false)}/>}
     <div className="qt-topbar" style={{paddingBottom:14}}><div className="qt-date">더보기</div></div>
     <div className="qt-profile"><div className="qt-profile-av">{ini(me?.name)}</div><div><div className="qt-profile-name">{me?.name}</div><div className="qt-profile-sub">{me?.group||'미배정'} · 연속 {streak}일</div></div></div>
     <div className="qt-more-list">
-      {[{l:'지난 묵상 노트'},{l:'알림 설정'},{l:'도움말'}].map(i=><button key={i.l} className="qt-more-item"><span className="qt-more-label">{i.l}</span><span className="qt-more-right">{IC.chev('#6c7682')}</span></button>)}
+      <button className="qt-more-item" onClick={()=>setShowNotes(true)}>
+        <span className="qt-more-label">내 묵상 노트</span>
+        <span className="qt-more-right">{IC.chev('#6c7682')}</span>
+      </button>
+      {[{l:'알림 설정'},{l:'도움말'}].map(i=>(
+        <button key={i.l} className="qt-more-item"><span className="qt-more-label">{i.l}</span><span className="qt-more-right">{IC.chev('#6c7682')}</span></button>
+      ))}
       {me?.isLeader&&<button className="qt-more-item" onClick={onDash} style={{marginTop:8}}><span className="qt-more-label" style={{color:'var(--gold)'}}>리더 대시보드</span><span className="qt-more-right">{IC.dash('var(--gold)')}</span></button>}
       <button className="qt-more-item" onClick={onLogout} style={{marginTop:8}}><span className="qt-more-label" style={{color:'var(--danger)'}}>로그아웃</span><span className="qt-more-right">{IC.out('var(--danger)')}</span></button>
     </div>
