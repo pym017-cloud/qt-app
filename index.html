@@ -423,6 +423,57 @@ async function doToggleAmen(id,amened){const{db,doc,updateDoc,increment}=window.
 function HomeScreen({done,onWrite,onMarkDone,completedSet,streak,monthDone}){
   const me=window._me, entry=getEntry(), td=new Date(TODAY), dow=td.getDay(), mo=dow===0?-6:1-dow;
   const week=Array.from({length:7},(_,i)=>{const d=new Date(td);d.setDate(td.getDate()+mo+i);return{date:d.toISOString().slice(0,10),dow:['일','월','화','수','목','금','토'][d.getDay()]};});
+
+  // 오늘 내가 쓴 나눔 글
+  const[myNote,setMyNote]=useState(null);
+  const[editing,setEditing]=useState(false);
+  const[editVerseRef,setEditVerseRef]=useState('');
+  const[editVerse,setEditVerse]=useState('');
+  const[editText,setEditText]=useState('');
+  const[editApply,setEditApply]=useState('');
+  const[saving,setSaving]=useState(false);
+
+  useEffect(()=>{
+    if(!done||!me)return;
+    const{db,collection,query,where,onSnapshot}=window._fb;
+    const q=query(collection(db,'shares'),where('uid','==',me.uid),where('date','==',TODAY));
+    const unsub=onSnapshot(q,snap=>{
+      if(snap.docs.length>0){
+        const d=snap.docs[0];
+        setMyNote({id:d.id,...d.data()});
+      } else {
+        setMyNote(null);
+      }
+    });
+    return()=>unsub();
+  },[done,me?.uid]);
+
+  const startEdit=()=>{
+    if(!myNote)return;
+    setEditVerseRef(myNote.verseRef||'');
+    setEditVerse(myNote.verse||'');
+    setEditText(myNote.text||'');
+    setEditApply(myNote.apply||'');
+    setEditing(true);
+  };
+
+  const saveEdit=async()=>{
+    setSaving(true);
+    try{
+      const{db,doc,updateDoc}=window._fb;
+      await updateDoc(doc(db,'shares',myNote.id),{verseRef:editVerseRef,verse:editVerse,text:editText,apply:editApply});
+      setEditing(false);
+    }catch(e){alert('저장 실패.');}
+    finally{setSaving(false);}
+  };
+
+  const S={
+    noteCard:{background:'var(--surface)',borderRadius:20,padding:'20px 20px 16px',margin:'16px 16px 0',border:'1px solid rgba(212,165,116,0.2)'},
+    label:{fontSize:12,color:'var(--gold)',fontWeight:700,letterSpacing:'.08em',textTransform:'uppercase',marginBottom:6},
+    textarea:{width:'100%',background:'var(--surface-2)',border:'1px solid var(--gold)',borderRadius:14,padding:'14px 16px',color:'var(--text)',fontSize:16,lineHeight:1.65,fontFamily:'inherit',resize:'none',outline:'none',marginBottom:10},
+    verseBox:{marginBottom:12,padding:'12px 14px 12px 16px',background:'rgba(212,165,116,0.08)',borderLeft:'3px solid var(--gold)',borderRadius:'4px 12px 12px 4px'},
+  };
+
   return(<>
     <div className="qt-topbar"><div><div className="qt-greet">평안하세요, {me?.name}님</div><div className="qt-date">{parseInt(TODAY.slice(5,7))}월 {parseInt(TODAY.slice(8,10))}일</div></div></div>
     <div className="qt-card hero">
@@ -430,11 +481,65 @@ function HomeScreen({done,onWrite,onMarkDone,completedSet,streak,monthDone}){
       <div className="qt-passage-book">{entry.book}</div>
       <div className="qt-passage-range">{entry.range}</div>
       <div className="qt-meta"><span>약 15분</span><span className="qt-meta-dot"/><span>묵상 + 나눔</span></div>
-      {done?<button className="qt-cta done"><span style={{display:'inline-flex',alignItems:'center',gap:8}}>{IC.chk()}오늘 묵상 완료</span></button>:<button className="qt-cta" onClick={onWrite}>묵상 시작하기</button>}
+      {done
+        ? <button className="qt-cta done"><span style={{display:'inline-flex',alignItems:'center',gap:8}}>{IC.chk()}오늘 묵상 완료</span></button>
+        : <button className="qt-cta" onClick={onWrite}>묵상 시작하기</button>
+      }
       {!done&&<button className="qt-cta ghost" onClick={onMarkDone}>본문만 읽음 표시</button>}
     </div>
+
+    {/* 오늘 내가 쓴 묵상 노트 */}
+    {done && myNote && (
+      <div style={S.noteCard}>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:14}}>
+          <div style={{fontSize:15,fontWeight:700,color:'var(--text)'}}>오늘 내가 쓴 묵상</div>
+          {!editing&&(
+            <button onClick={startEdit} style={{padding:'7px 14px',borderRadius:9,background:'var(--gold-soft)',color:'var(--gold)',fontSize:13,fontWeight:700,border:0,cursor:'pointer'}}>
+              수정하기
+            </button>
+          )}
+        </div>
+
+        {editing?(
+          /* 수정 모드 */
+          <div>
+            <div style={S.label}>은혜 받은 구절</div>
+            <input
+              style={{width:'100%',background:'transparent',border:0,borderBottom:'1px solid var(--divider)',padding:'6px 0',color:'var(--gold)',fontWeight:700,fontSize:13,fontFamily:'inherit',outline:'none',marginBottom:8,letterSpacing:'.06em'}}
+              value={editVerseRef} onChange={e=>setEditVerseRef(e.target.value)} placeholder="예: 고전 3:11"
+            />
+            <textarea style={{...S.textarea,background:'rgba(212,165,116,0.08)',border:'none',borderLeft:'3px solid var(--gold)',borderRadius:'4px 14px 14px 4px',fontFamily:'Noto Serif KR,serif'}} rows={3} value={editVerse} onChange={e=>setEditVerse(e.target.value)} placeholder="마음에 와닿은 구절"/>
+            <div style={S.label}>받은 은혜 · 깨달음</div>
+            <textarea style={S.textarea} rows={5} value={editText} onChange={e=>setEditText(e.target.value)}/>
+            <div style={S.label}>결단 · 적용</div>
+            <textarea style={{...S.textarea,border:'1px solid var(--divider)'}} rows={2} value={editApply} onChange={e=>setEditApply(e.target.value)} placeholder="오늘 실천할 한 가지"/>
+            <div style={{display:'flex',gap:8,marginTop:4}}>
+              <button onClick={saveEdit} disabled={saving} style={{flex:1,height:46,borderRadius:12,background:'var(--gold)',color:'#1a1410',fontSize:16,fontWeight:700,border:0,cursor:'pointer',fontFamily:'inherit'}}>
+                {saving?'저장 중…':'저장'}
+              </button>
+              <button onClick={()=>setEditing(false)} style={{flex:1,height:46,borderRadius:12,background:'var(--surface-2)',color:'var(--text-2)',fontSize:16,fontWeight:600,border:0,cursor:'pointer',fontFamily:'inherit'}}>
+                취소
+              </button>
+            </div>
+          </div>
+        ):(
+          /* 보기 모드 */
+          <>
+            {myNote.verseRef&&(
+              <div style={S.verseBox}>
+                <div style={{fontSize:12,color:'var(--gold)',fontWeight:700,letterSpacing:'.06em'}}>{myNote.verseRef}</div>
+                {myNote.verse&&<div style={{fontFamily:'Noto Serif KR,serif',fontSize:16,lineHeight:1.65,color:'var(--text)',marginTop:5}}>"{myNote.verse}"</div>}
+              </div>
+            )}
+            {myNote.text&&<div style={{fontSize:16,lineHeight:1.7,color:'var(--text)',marginBottom:myNote.apply?10:0}}>{myNote.text}</div>}
+            {myNote.apply&&<div style={{fontSize:14,color:'var(--text-2)',paddingTop:10,borderTop:'1px solid var(--divider)'}}>✏️ {myNote.apply}</div>}
+          </>
+        )}
+      </div>
+    )}
+
     <div style={{padding:'0 16px'}}>
-      <div className="qt-streak"><div className="qt-streak-num">{streak}<span className="unit">일</span></div><div className="qt-streak-label">연속 묵상 중이에요<br/><b>이번 달 {monthDone}일</b> 완료</div></div>
+      <div className="qt-streak" style={{marginTop:16}}><div className="qt-streak-num">{streak}<span className="unit">일</span></div><div className="qt-streak-label">연속 묵상 중이에요<br/><b>이번 달 {monthDone}일</b> 완료</div></div>
       <div className="qt-week">{week.map(d=>{const isT=d.date===TODAY,isDone=completedSet.has(d.date);return(<div key={d.date} className="qt-week-cell"><div className={'qt-week-day'+(isT?' today':'')}>{d.dow}</div><div className={'qt-week-mark'+(isDone?' done':'')+(isT?' today':'')}>{isDone?IC.chk():parseInt(d.date.slice(-2),10)}</div></div>);})}</div>
     </div>
     <div style={{height:24}}/>
