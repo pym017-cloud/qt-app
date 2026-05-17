@@ -296,7 +296,7 @@ import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, where, or
 
 const app = initializeApp({ apiKey:"AIzaSyDgoWnFT7OR2pEKzZ0DhWixC0AVZARsWag", authDomain:"scbaptist-qt.firebaseapp.com", projectId:"scbaptist-qt", storageBucket:"scbaptist-qt.firebasestorage.app", messagingSenderId:"324309935668", appId:"1:324309935668:web:711d15b34811c275b78c61" });
 const auth = getAuth(app), db = getFirestore(app), gp = new GoogleAuthProvider();
-window._fb = { auth, db, gp, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signOut, onAuthStateChanged, GoogleAuthProvider, doc, setDoc, getDoc, collection, addDoc, query, where, orderBy, onSnapshot, updateDoc, increment, serverTimestamp, limit, deleteDoc, getDocs };
+window._fb = { auth, db, gp, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signOut, onAuthStateChanged, GoogleAuthProvider, doc, setDoc, getDoc, collection, addDoc, query, where, orderBy, onSnapshot, updateDoc, increment, serverTimestamp, limit, deleteDoc, getDocs, getAuth };
 
 onAuthStateChanged(auth, async (user) => {
   document.getElementById('loading-screen').classList.add('hidden');
@@ -361,37 +361,37 @@ const { useState, useEffect } = React;
 
 // ── 두란노 생명의 삶 2026년 5월 스케줄 ──
 const SCHEDULE = [
-  {date:'2026-05-01', book:'룻기', range:'1:1-14',  title:'룻기 1장'},
-  {date:'2026-05-02', book:'룻기', range:'1:15-22', title:'룻기 1장'},
-  {date:'2026-05-03', book:'룻기', range:'2:1-7',   title:'룻기 2장'},
-  {date:'2026-05-04', book:'룻기', range:'2:8-16',  title:'룻기 2장'},
-  {date:'2026-05-05', book:'룻기', range:'2:17-23', title:'룻기 2장'},
-  {date:'2026-05-06', book:'룻기', range:'3:1-18',  title:'룻기 3장'},
-  {date:'2026-05-07', book:'룻기', range:'4:1-6',   title:'룻기 4장'},
-  {date:'2026-05-08', book:'룻기', range:'4:7-12',  title:'룻기 4장'},
-  {date:'2026-05-09', book:'룻기', range:'4:13-22', title:'룻기 4장'},
-  {date:'2026-05-10', book:'고린도전서', range:'1:1-17',  title:'고린도전서 1장'},
-  {date:'2026-05-11', book:'고린도전서', range:'1:18-25', title:'고린도전서 1장'},
-  {date:'2026-05-12', book:'고린도전서', range:'1:26-31', title:'고린도전서 1장'},
-  {date:'2026-05-13', book:'고린도전서', range:'2:1-9',   title:'고린도전서 2장'},
-  {date:'2026-05-14', book:'고린도전서', range:'2:10-16', title:'고린도전서 2장'},
-  {date:'2026-05-15', book:'고린도전서', range:'3:1-15',  title:'고린도전서 3장'},
-  {date:'2026-05-16', book:'고린도전서', range:'3:16-23', title:'고린도전서 3장'},
-  {date:'2026-05-17', book:'고린도전서', range:'4:1-8',   title:'고린도전서 4장'},
-  {date:'2026-05-18', book:'고린도전서', range:'4:9-21',  title:'고린도전서 4장'},
-  {date:'2026-05-19', book:'고린도전서', range:'5:1-13',  title:'고린도전서 5장'},
-  {date:'2026-05-20', book:'고린도전서', range:'6:1-11',  title:'고린도전서 6장'},
-  {date:'2026-05-21', book:'고린도전서', range:'6:12-20', title:'고린도전서 6장'},
-  {date:'2026-05-22', book:'고린도전서', range:'7:1-16',  title:'고린도전서 7장'},
-  {date:'2026-05-23', book:'고린도전서', range:'7:17-24', title:'고린도전서 7장'},
-  {date:'2026-05-24', book:'고린도전서', range:'7:25-40', title:'고린도전서 7장'},
-  {date:'2026-05-25', book:'고린도전서', range:'8:1-13',  title:'고린도전서 8장'},
-  {date:'2026-05-26', book:'고린도전서', range:'9:1-10',  title:'고린도전서 9장'},
-  {date:'2026-05-27', book:'고린도전서', range:'9:11-18', title:'고린도전서 9장'},
-  {date:'2026-05-28', book:'고린도전서', range:'9:19-27', title:'고린도전서 9장'},
-  {date:'2026-05-29', book:'고린도전서', range:'10:1-13', title:'고린도전서 10장'},
-  {date:'2026-05-30', book:'고린도전서', range:'10:14-22',title:'고린도전서 10장'},
-  {date:'2026-05-31', book:'고린도전서', range:'10:23-33',title:'고린도전서 10장'},
+  {date:'2026-05-01', book:'룻기', range:'1:1-14',  verse:'나오미가 두 며느리에게 이르되 너희는 각기 너희 어머니의 집으로 돌아가라 너희가 죽은 자들과 나를 선대한 것 같이 여호와께서 너희를 선대하시기를 원하며 (룻 1:8)'},
+  {date:'2026-05-02', book:'룻기', range:'1:15-22', verse:'룻이 이르되 내가 어머니를 떠나며 어머니를 따르지 말고 돌아가라 강권하지 마옵소서 어머니께서 가시는 곳에 나도 가고 어머니께서 머무시는 곳에서 나도 머물겠나이다 (룻 1:16)'},
+  {date:'2026-05-03', book:'룻기', range:'2:1-7',   verse:'보아스가 룻에게 이르되 내 딸아 들으라 이삭을 주우러 다른 밭으로 가지 말며 여기서 떠나지 말고 나의 소녀들과 함께 있으라 (룻 2:8)'},
+  {date:'2026-05-04', book:'룻기', range:'2:8-16',  verse:'보아스가 그에게 대답하여 이르되 네 남편이 죽은 후로 네가 시어머니에게 행한 모든 것과 네 부모와 고국을 떠나 전에 알지 못하던 백성에게로 온 일이 내게 분명히 알려졌느니라 (룻 2:11)'},
+  {date:'2026-05-05', book:'룻기', range:'2:17-23', verse:'나오미가 자기 며느리에게 이르되 그가 여호와로부터 복 받기를 원하노라 그가 살아 있는 자와 죽은 자에게 은혜 베풀기를 그치지 아니하도다 (룻 2:20)'},
+  {date:'2026-05-06', book:'룻기', range:'3:1-18',  verse:'보아스가 이르되 내 딸아 여호와께서 네게 복 주시기를 원하노라 네가 가난하고 부하고 간에 젊은 자를 따르지 아니하였으니 네가 베푼 인애가 처음보다 나중이 더하도다 (룻 3:10)'},
+  {date:'2026-05-07', book:'룻기', range:'4:1-6',   verse:'보아스가 이르되 네가 나오미의 손에서 그 밭을 사는 날에 죽은 자의 아내 모압 여인 룻에게서 사서 그 죽은 자의 기업을 그의 이름으로 세워야 할지니라 (룻 4:5)'},
+  {date:'2026-05-08', book:'룻기', range:'4:7-12',  verse:'성문에 있는 모든 백성과 장로들이 이르되 우리가 증인이 되노라 여호와께서 네 집에 들어가는 여인으로 이스라엘의 집을 세운 라헬과 레아 두 사람과 같게 하시기를 원하며 (룻 4:11)'},
+  {date:'2026-05-09', book:'룻기', range:'4:13-22', verse:'나오미가 아기를 받아 품에 품고 그의 양육자가 되니 그의 이웃 여인들이 그에게 이름을 지어 주되 나오미에게 아들이 태어났다 하여 그의 이름을 오벳이라 하였는데 그는 다윗의 아버지인 이새의 아버지였더라 (룻 4:16-17)'},
+  {date:'2026-05-10', book:'고린도전서', range:'1:1-17',  verse:'그리스도께서 나를 보내심은 세례를 베풀게 하려 하심이 아니요 오직 복음을 전하게 하려 하심이로되 말의 지혜로 하지 아니함은 그리스도의 십자가가 헛되지 않게 하려 함이라 (고전 1:17)'},
+  {date:'2026-05-11', book:'고린도전서', range:'1:18-25', verse:'십자가의 도가 멸망하는 자들에게는 미련한 것이요 구원을 받는 우리에게는 하나님의 능력이라 (고전 1:18)'},
+  {date:'2026-05-12', book:'고린도전서', range:'1:26-31', verse:'하나님께서 세상의 미련한 것들을 택하사 지혜 있는 자들을 부끄럽게 하려 하시고 세상의 약한 것들을 택하사 강한 것들을 부끄럽게 하려 하시며 (고전 1:27)'},
+  {date:'2026-05-13', book:'고린도전서', range:'2:1-9',   verse:'내가 너희 중에서 예수 그리스도와 그가 십자가에 못 박히신 것 외에는 아무 것도 알지 아니하기로 작정하였음이라 (고전 2:2)'},
+  {date:'2026-05-14', book:'고린도전서', range:'2:10-16', verse:'오직 하나님이 성령으로 이것을 우리에게 보이셨으니 성령은 모든 것 곧 하나님의 깊은 것까지도 통달하시느니라 (고전 2:10)'},
+  {date:'2026-05-15', book:'고린도전서', range:'3:1-15',  verse:'우리는 하나님의 동역자들이요 너희는 하나님의 밭이요 하나님의 집이니라 (고전 3:9)'},
+  {date:'2026-05-16', book:'고린도전서', range:'3:16-23', verse:'너희는 너희가 하나님의 성전인 것과 하나님의 성령이 너희 안에 계시는 것을 알지 못하느냐 (고전 3:16)'},
+  {date:'2026-05-17', book:'고린도전서', range:'4:1-8',   verse:'사람이 마땅히 우리를 그리스도의 일꾼이요 하나님의 비밀을 맡은 자로 여길지어다 (고전 4:1)'},
+  {date:'2026-05-18', book:'고린도전서', range:'4:9-21',  verse:'하나님의 나라는 말에 있지 아니하고 오직 능력에 있음이라 (고전 4:20)'},
+  {date:'2026-05-19', book:'고린도전서', range:'5:1-13',  verse:'너희가 자랑하는 것이 옳지 아니하도다 적은 누룩이 온 덩어리에 퍼지는 것을 알지 못하느냐 (고전 5:6)'},
+  {date:'2026-05-20', book:'고린도전서', range:'6:1-11',  verse:'불의한 자가 하나님의 나라를 유업으로 받지 못할 줄을 알지 못하느냐 (고전 6:9)'},
+  {date:'2026-05-21', book:'고린도전서', range:'6:12-20', verse:'너희 몸은 너희가 하나님께로부터 받은 바 너희 가운데 계신 성령의 전인 줄을 알지 못하느냐 너희는 너희 자신의 것이 아니라 (고전 6:19)'},
+  {date:'2026-05-22', book:'고린도전서', range:'7:1-16',  verse:'각 사람은 부르심을 받은 그 부르심 그대로 지내라 (고전 7:20)'},
+  {date:'2026-05-23', book:'고린도전서', range:'7:17-24', verse:'형제들아 각 사람이 부르심을 받은 그 상태로 하나님과 함께 거하라 (고전 7:24)'},
+  {date:'2026-05-24', book:'고린도전서', range:'7:25-40', verse:'때가 단축하여진고로 이 후부터 아내 있는 자들은 없는 자 같이 하며 (고전 7:29)'},
+  {date:'2026-05-25', book:'고린도전서', range:'8:1-13',  verse:'지식은 교만하게 하며 사랑은 덕을 세우나니 (고전 8:1)'},
+  {date:'2026-05-26', book:'고린도전서', range:'9:1-10',  verse:'내가 복음을 전할지라도 자랑할 것이 없음은 내가 부득불 할 일임이라 만일 복음을 전하지 아니하면 내게 화가 있을 것임이로라 (고전 9:16)'},
+  {date:'2026-05-27', book:'고린도전서', range:'9:11-18', verse:'내가 모든 사람에게서 자유로우나 스스로 모든 사람에게 종이 된 것은 더 많은 사람을 얻고자 함이라 (고전 9:19)'},
+  {date:'2026-05-28', book:'고린도전서', range:'9:19-27', verse:'내가 내 몸을 쳐 복종하게 함은 내가 남에게 전파한 후에 자신이 도리어 버림을 당할까 두려워함이로다 (고전 9:27)'},
+  {date:'2026-05-29', book:'고린도전서', range:'10:1-13', verse:'사람이 감당할 시험 밖에는 너희가 당한 것이 없나니 오직 하나님은 미쁘사 너희가 감당하지 못할 시험 당함을 허락하지 아니하시고 (고전 10:13)'},
+  {date:'2026-05-30', book:'고린도전서', range:'10:14-22',verse:'우리가 축복하는 바 축복의 잔은 그리스도의 피에 참여함이 아니며 우리가 떼는 떡은 그리스도의 몸에 참여함이 아니냐 (고전 10:16)'},
+  {date:'2026-05-31', book:'고린도전서', range:'10:23-33',verse:'그런즉 너희가 먹든지 마시든지 무엇을 하든지 다 하나님의 영광을 위하여 하라 (고전 10:31)'},
 ];
 
 const getToday = () => new Date().toISOString().slice(0,10);
@@ -418,7 +418,12 @@ const IC = {
 };
 
 async function saveCheck(uid,date){const{db,doc,setDoc,serverTimestamp}=window._fb;await setDoc(doc(db,'checks',`${uid}_${date}`),{uid,date,completedAt:serverTimestamp()});}
-async function saveShare(uid,name,data){const{db,collection,addDoc,serverTimestamp}=window._fb;await addDoc(collection(db,'shares'),{uid,name,...data,createdAt:serverTimestamp(),amen:0,comments:0});}
+async function saveShare(uid,name,data){
+  const{db,collection,addDoc,serverTimestamp,auth}=window._fb;
+  // 이름이 없으면 Firebase Auth에서 다시 가져오기
+  const finalName = name || auth?.currentUser?.displayName || window._me?.name || '성도';
+  await addDoc(collection(db,'shares'),{uid,name:finalName,...data,createdAt:serverTimestamp(),amen:0,comments:0});
+}
 async function doToggleAmen(id,amened){const{db,doc,updateDoc,increment}=window._fb;await updateDoc(doc(db,'shares',id),{amen:increment(amened?-1:1)});}
 
 function HomeScreen({done,onWrite,onMarkDone,completedSet,streak,monthDone}){
@@ -485,6 +490,11 @@ function HomeScreen({done,onWrite,onMarkDone,completedSet,streak,monthDone}){
       <div className="qt-eyebrow">📖 두란노 생명의 삶</div>
       <div className="qt-passage-book">{entry.book}</div>
       <div className="qt-passage-range">{entry.range}</div>
+      {entry.verse&&(
+        <div style={{marginTop:14,padding:'14px 16px 14px 18px',background:'rgba(212,165,116,0.1)',borderLeft:'3px solid var(--gold)',borderRadius:'4px 14px 14px 4px'}}>
+          <div style={{fontFamily:'Noto Serif KR,serif',fontSize:15,lineHeight:1.7,color:'var(--text)',opacity:0.9}}>{entry.verse}</div>
+        </div>
+      )}
       <div className="qt-meta"><span>약 15분</span><span className="qt-meta-dot"/><span>묵상 + 나눔</span></div>
       {done
         ? <button className="qt-cta done"><span style={{display:'inline-flex',alignItems:'center',gap:8}}>{IC.chk()}오늘 묵상 완료</span></button>
@@ -887,24 +897,92 @@ function MoreScreen({streak,onLogout,onDash}){
 
 function WriteScreen({onCancel,onSave}){
   const entry=getEntry();
-  const[vRef,setVRef]=useState('');const[verse,setVerse]=useState('');const[text,setText]=useState('');const[apply,setApply]=useState('');const[shareOn,setShareOn]=useState(true);const[saving,setSaving]=useState(false);
+  const[vRef,setVRef]=useState('');
+  const[verse,setVerse]=useState('');
+  const[text,setText]=useState('');
+  const[apply,setApply]=useState('');
+  const[shareOn,setShareOn]=useState(true);
+  const[saving,setSaving]=useState(false);
+
+  // 1가지라도 내용이 있으면 저장 가능
+  const hasContent = vRef.trim()||verse.trim()||text.trim()||apply.trim();
+
   const save=async()=>{
-    if(!text.trim()){alert('받은 은혜를 짧게라도 적어주세요 🙏');return;}setSaving(true);
-    try{const me=window._me;await saveCheck(me.uid,TODAY);if(shareOn)await saveShare(me.uid,me.name,{date:TODAY,book:entry.book,range:entry.range,verseRef:vRef,verse,text,apply});onSave();}
-    catch(e){alert('저장 실패. 네트워크를 확인해주세요.');}finally{setSaving(false);}
+    if(!hasContent){
+      alert('묵상 내용을 한 가지라도 적어주세요 🙏');
+      return;
+    }
+    setSaving(true);
+    try{
+      const me=window._me;
+      // 이름이 확실히 있는지 확인
+      const name = me?.name || window._fb.auth.currentUser?.displayName || '성도';
+      await saveCheck(me.uid, TODAY);
+      if(shareOn) await saveShare(me.uid, name, {
+        date:TODAY, book:entry.book, range:entry.range,
+        verseRef:vRef, verse, text, apply
+      });
+      onSave();
+    }catch(e){alert('저장 실패. 네트워크를 확인해주세요.');}
+    finally{setSaving(false);}
   };
+
+  // 4번: 취소 클릭 시 확인 없이 바로 나가기
+  const handleCancel=()=>{
+    onCancel();
+  };
+
   return(
     <div className="qt-app" style={{position:'fixed',inset:0,zIndex:50,background:'var(--bg)',overflowY:'auto'}}>
-      <div className="qt-write-head"><button className="qt-write-cancel" onClick={onCancel}>취소</button><div style={{fontSize:17,fontWeight:700}}>오늘의 묵상</div><button className="qt-write-save" onClick={save} disabled={saving}>{saving?'저장 중…':'완료'}</button></div>
+      <div className="qt-write-head">
+        <button className="qt-write-cancel" onClick={handleCancel}>취소</button>
+        <div style={{fontSize:17,fontWeight:700}}>오늘의 묵상</div>
+        <button className="qt-write-save" onClick={save} disabled={saving||!hasContent} style={{opacity:hasContent?1:0.4}}>
+          {saving?'저장 중…':'완료'}
+        </button>
+      </div>
+
       <div className="qt-card hero" style={{margin:'18px 16px 0'}}>
         <div className="qt-eyebrow">📖 두란노 생명의 삶</div>
         <div className="qt-passage-book">{entry.book}</div>
         <div className="qt-passage-range">{entry.range}</div>
+        {entry.verse&&(
+          <div style={{marginTop:12,padding:'12px 14px 12px 16px',background:'rgba(212,165,116,0.1)',borderLeft:'3px solid var(--gold)',borderRadius:'4px 12px 12px 4px'}}>
+            <div style={{fontFamily:'Noto Serif KR,serif',fontSize:14,lineHeight:1.7,color:'var(--text)',opacity:0.9}}>{entry.verse}</div>
+          </div>
+        )}
       </div>
-      <div className="qt-write-section"><div className="qt-write-label">은혜 받은 구절</div><input className="qt-verse-ref-input" value={vRef} onChange={e=>setVRef(e.target.value)} placeholder={`예: ${entry.book.slice(0,2)} ${entry.range.split('-')[0]}`}/><textarea className="qt-verse-input" rows={3} value={verse} onChange={e=>setVerse(e.target.value)} placeholder="마음에 와닿은 한 구절을 적어보세요"/></div>
-      <div className="qt-write-section"><div className="qt-write-label">받은 은혜 · 깨달음</div><textarea className="qt-write-area" rows={6} value={text} onChange={e=>setText(e.target.value)} placeholder="말씀을 통해 만난 것을 자유롭게 적어보세요"/></div>
-      <div className="qt-write-section"><div className="qt-write-label">결단 · 적용</div><textarea className="qt-write-area" rows={3} value={apply} onChange={e=>setApply(e.target.value)} placeholder="오늘 실천할 한 가지를 적어보세요"/></div>
-      <div className="qt-write-section" style={{paddingBottom:48}}><button className="qt-write-toggle" onClick={()=>setShareOn(s=>!s)}><span style={{textAlign:'left'}}><div style={{fontSize:17,fontWeight:600}}>셀과 나누기</div><div style={{fontSize:14,color:'var(--text-2)',marginTop:2}}>나눔 피드에 공유됩니다</div></span><span className={'qt-toggle'+(shareOn?' on':'')}/></button></div>
+
+      {/* 안내 문구 */}
+      <div style={{margin:'14px 22px 0',padding:'12px 16px',background:'var(--gold-soft)',borderRadius:12,fontSize:13,color:'var(--gold)',lineHeight:1.6}}>
+        💡 세 가지 중 <b>한 가지만</b> 써도 완료됩니다
+      </div>
+
+      <div className="qt-write-section">
+        <div className="qt-write-label">은혜 받은 구절 <span style={{color:'var(--text-3)',fontWeight:400,fontSize:11,textTransform:'none',letterSpacing:0}}>(선택)</span></div>
+        <input className="qt-verse-ref-input" value={vRef} onChange={e=>setVRef(e.target.value)} placeholder={`예: ${entry.book.slice(0,2)} ${entry.range.split('-')[0]}`}/>
+        <textarea className="qt-verse-input" rows={3} value={verse} onChange={e=>setVerse(e.target.value)} placeholder="마음에 와닿은 한 구절을 적어보세요"/>
+      </div>
+
+      <div className="qt-write-section">
+        <div className="qt-write-label">받은 은혜 · 깨달음 <span style={{color:'var(--text-3)',fontWeight:400,fontSize:11,textTransform:'none',letterSpacing:0}}>(선택)</span></div>
+        <textarea className="qt-write-area" rows={6} value={text} onChange={e=>setText(e.target.value)} placeholder="말씀을 통해 만난 것을 자유롭게 적어보세요"/>
+      </div>
+
+      <div className="qt-write-section">
+        <div className="qt-write-label">결단 · 적용 <span style={{color:'var(--text-3)',fontWeight:400,fontSize:11,textTransform:'none',letterSpacing:0}}>(선택)</span></div>
+        <textarea className="qt-write-area" rows={3} value={apply} onChange={e=>setApply(e.target.value)} placeholder="오늘 실천할 한 가지를 적어보세요"/>
+      </div>
+
+      <div className="qt-write-section" style={{paddingBottom:48}}>
+        <button className="qt-write-toggle" onClick={()=>setShareOn(s=>!s)}>
+          <span style={{textAlign:'left'}}>
+            <div style={{fontSize:17,fontWeight:600}}>셀과 나누기</div>
+            <div style={{fontSize:14,color:'var(--text-2)',marginTop:2}}>나눔 피드에 공유됩니다</div>
+          </span>
+          <span className={'qt-toggle'+(shareOn?' on':'')}/>
+        </button>
+      </div>
     </div>
   );
 }
